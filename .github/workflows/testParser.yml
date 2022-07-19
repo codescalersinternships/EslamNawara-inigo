@@ -19,4 +19,4 @@ jobs:
         go-version: 1.18.3
 
     - name: go test
-      run: go test -v -cover ./../../parser
+      run: go test -v -cover ./../../

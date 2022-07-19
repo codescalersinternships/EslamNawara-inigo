@@ -220,7 +220,7 @@ func checkEqNoOrder(t *testing.T, want, got []string) {
 	for _, elem := range got {
 		gotMp[elem]++
 	}
-	if !reflect.DeepEqual(got, want) {
+	if !reflect.DeepEqual(gotMp, wantMp) {
 		t.Errorf("expected %v but got %v", want, got)
 	}
 }

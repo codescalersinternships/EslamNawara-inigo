@@ -1,3 +1,5 @@
+//Simple parser that provides variety of functionalities for reading from and writing to ini files.
+
 package parser
 
 import (
@@ -99,13 +101,10 @@ func check(e error) bool {
 }
 
 func (pr *Parser) clearParser() {
-	for k := range pr.mp {
-		delete(pr.mp, k)
-	}
+	pr = nil
 }
 
 func (pr Parser) generateError(errorMsg, filePath, content string, isFile bool) error {
-
 	pr.clearParser()
 	var tp string
 	if isFile {
@@ -113,7 +112,6 @@ func (pr Parser) generateError(errorMsg, filePath, content string, isFile bool) 
 	} else {
 		tp = content
 	}
-
 	if isFile {
 		return errors.New(errorMsg + " in the file " + tp)
 	}
@@ -162,7 +160,7 @@ func (pr *Parser) parseData(content, filePath string, isFile bool) error {
 			sectionName = s.Split(sectionName, endSectionChar)[0]
 			sectionName = s.Trim(sectionName, " ")
 
-		} else {
+		} else if sectionName != "" {
 			//check if the line is actually in key = value format
 			temp := s.Split(actualLine, keyValSeparator)
 			key := s.Trim(temp[0], " ")
@@ -170,10 +168,12 @@ func (pr *Parser) parseData(content, filePath string, isFile bool) error {
 			if len(temp) == 2 {
 				val = s.Trim(temp[1], " ")
 			} else if len(temp) > 2 {
-				pr.clearParser()
 				return pr.generateError("Too much values for one key in line "+strconv.Itoa(index+1), filePath, content, isFile)
 			}
 			newSection[key] = val
+		} else {
+			return pr.generateError("File contains values doesn't belong to any section in line "+strconv.Itoa(index+1), filePath, content, isFile)
+
 		}
 	}
 	if sectionName != "" {

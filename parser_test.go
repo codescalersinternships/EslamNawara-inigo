@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
-
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
 func TestLoadFromString(t *testing.T) {
@@ -120,12 +117,8 @@ func TestGetSectionsNames(t *testing.T) {
 	pr.LoadFromFile("testingFiles/testLoad.ini")
 	got := pr.GetSectionNames()
 	want := []string{"owner", "database"}
-	//helper that compare two slices ignoring the order of elements.
-	less := func(a, b string) bool { return a < b }
-	if cmp.Diff(want, got, cmpopts.SortSlices(less)) != "" {
-		t.Errorf("expected %q but got %q", want, got)
+    checkEqNoOrder(t, want, got)
 	}
-}
 
 func TestGet(t *testing.T) {
 	t.Run("Section doesn't exist", func(t *testing.T) {
@@ -214,4 +207,20 @@ func TestSaveToFile(t *testing.T) {
 	var pr Parser
 	pr.LoadFromFile("testingFiles/testLoad.ini")
 	pr.SaveToFile("testingFiles/testSave.ini")
+}
+
+func checkEqNoOrder(t *testing.T, want, got []string) {
+	t.Helper()
+	wantMp := make(map[string]int)
+	gotMp := make(map[string]int)
+
+	for _, elem := range want {
+		wantMp[elem]++
+	}
+	for _, elem := range got {
+		gotMp[elem]++
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("expected %v but got %v", want, got)
+	}
 }

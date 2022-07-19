@@ -2,6 +2,7 @@ package parser
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"strconv"
 	s "strings"
@@ -36,7 +37,7 @@ the function returns error message if the file doesn't exist or have invalid for
 func (pr *Parser) LoadFromFile(filePath string) error {
 	content, err := os.ReadFile(filePath)
 	if check(err) {
-		return errors.New("The file in the path\"" + filePath + "\" is not found!")
+		return errors.New("The file \"" + filePath + "\" is not found!")
 	}
 	return pr.parseData(string(content), filePath, true)
 }
@@ -70,6 +71,9 @@ func (pr Parser) Get(sectionName, key string) (string, error) {
 }
 
 func (pr Parser) Set(sectionName, key, val string) {
+	if pr.mp[sectionName] == nil {
+		pr.mp[sectionName] = make(Section)
+	}
 	pr.mp[sectionName][key] = val
 }
 
@@ -78,10 +82,10 @@ func (pr Parser) String() string {
 	for sec, secVal := range pr.mp {
 		stringValue += "[" + sec + "]" + "\n"
 		for key, val := range secVal {
-			stringValue += key + " : " + val + "\n"
+			stringValue += key + "=" + val + "\n"
 		}
 	}
-	return stringValue
+	return fmt.Sprint(stringValue)
 }
 
 func (pr Parser) SaveToFile(filePath string) {
@@ -101,6 +105,7 @@ func (pr *Parser) clearParser() {
 }
 
 func (pr Parser) generateError(errorMsg, filePath, content string, isFile bool) error {
+
 	pr.clearParser()
 	var tp string
 	if isFile {
@@ -172,6 +177,7 @@ func (pr *Parser) parseData(content, filePath string, isFile bool) error {
 		}
 	}
 	if sectionName != "" {
+		sectionName = s.Trim(sectionName, " ")
 		pr.mp[sectionName] = newSection
 	}
 	return nil

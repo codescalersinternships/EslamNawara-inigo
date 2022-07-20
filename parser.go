@@ -1,5 +1,4 @@
 // Simple parser that provides variety of functionalities for reading from and writing to ini files.
-
 package parser
 
 import (

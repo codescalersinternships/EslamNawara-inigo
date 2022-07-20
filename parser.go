@@ -1,4 +1,4 @@
-//Simple parser that provides variety of functionalities for reading from and writing to ini files.
+// Simple parser that provides variety of functionalities for reading from and writing to ini files.
 
 package parser
 
@@ -24,19 +24,20 @@ const (
 )
 
 /*
-LoadFromString function converts a string that follows the ini format and
-convert it to a map of the section Name to a map of key-value pairs.
-the function return an error message with any line that doesn't follow ini format.
+   LoadFromString function converts a string that follows the ini format and
+   convert it to a map of the section Name to a map of key-value pairs.
+   the function return an error message with any line that doesn't follow ini format.
 */
 func (pr *Parser) LoadFromString(content string) error {
 	return pr.parseData(content, "", false)
 }
 
 /*
-LoadFromFile function converts an ini file into a map of the section Name-map of key-value pairs
-the function returns error message if the file doesn't exist or have invalid format
+	LoadFromFile function converts an ini file into a map of the section Name-map of key-value pairs
+	the function returns error message if the file doesn't exist or have invalid format
 */
 func (pr *Parser) LoadFromFile(filePath string) error {
+
 	content, err := os.ReadFile(filePath)
 	if check(err) {
 		return errors.New("The file \"" + filePath + "\" is not found!")
@@ -45,7 +46,7 @@ func (pr *Parser) LoadFromFile(filePath string) error {
 }
 
 /*
-GetSectionNames returns a slice contains all sections in the parser map
+   GetSectionNames returns a slice contains all sections in the parser map
 */
 func (pr Parser) GetSectionNames() []string {
 	length := len(pr.mp)
@@ -58,10 +59,13 @@ func (pr Parser) GetSectionNames() []string {
 	return sectionNames
 }
 
+  // Returns a map contains all the parsed data
 func (pr Parser) GetSections() map[string]Section {
+
 	return pr.mp
 }
 
+// Returns the value defined with key key and located in section sectionName
 func (pr Parser) Get(sectionName, key string) (string, error) {
 	if pr.mp[sectionName] == nil {
 		return "", errors.New("Section " + sectionName + " not found")
@@ -72,6 +76,7 @@ func (pr Parser) Get(sectionName, key string) (string, error) {
 	return pr.mp[sectionName][key], nil
 }
 
+// Sets the value defined with key key and located in section sectionName to val 
 func (pr Parser) Set(sectionName, key, val string) {
 	if pr.mp[sectionName] == nil {
 		pr.mp[sectionName] = make(Section)
@@ -79,6 +84,7 @@ func (pr Parser) Set(sectionName, key, val string) {
 	pr.mp[sectionName][key] = val
 }
 
+// Returns a string representing the content of the parser
 func (pr Parser) String() string {
 	stringValue := ""
 	for sec, secVal := range pr.mp {
@@ -90,12 +96,14 @@ func (pr Parser) String() string {
 	return fmt.Sprint(stringValue)
 }
 
+// Saves the content of the parser to a file
 func (pr Parser) SaveToFile(filePath string) {
 	file, _ := os.Create(filePath)
 	defer file.Close()
 	file.Write([]byte(pr.String()))
 }
 
+// helper functions
 func check(e error) bool {
 	return e != nil
 }

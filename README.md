@@ -18,10 +18,54 @@ Simple parser that provides variety of functionalities for reading from and writ
  - `testLoad.ini` Helper file used to test the parser by reading from it. 
  - `testSave.ini` Helper file used to test the parser by writing to it.
 
-## To use the parser follow the commands:
- ```
- git clone https://github.com/codescalersinternships/EslamNawara-inigo/tree/main/parser
- cd parser
- go test -v
- ```
-  After testing is done successfully you can go ahead and use the library by importing it to your go file
+## Examples
+Create a variable of type Parser
+
+```
+    var pr Parser
+```
+
+Parse the content of a file
+```
+    parser.LoadFromFile(filePath)
+``` 
+
+Parse the content of a String 
+```
+    parser.LoadFromFile(string)
+```   
+
+Get all section names in the parser
+
+```
+    pr.GetSectionNames()
+```
+
+Get the a map contains the parser content
+
+```
+    pr.GetSections()
+```
+
+Get a value from a section with a key
+
+```
+    pr.Get(section, key)
+```
+
+Set a value in a section with key to value
+
+```
+    pr.Set(section, key, val)
+```
+
+Get string representation of the parser
+
+```
+   pr.String() 
+```
+
+Save parser content to a file in filePath
+
+```
+    pr.SaveToFile(filePath)

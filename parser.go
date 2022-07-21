@@ -9,11 +9,12 @@ import (
 	s "strings"
 )
 
+// You can create parser by crating a variable of type Parser(var pr Parser) and initialize it by calling one of the functions LoadFromString or LoadFromFile.
 type Parser struct {
-	mp map[string]Section
+	mp map[string]section
 }
 
-type Section map[string]string
+type section map[string]string
 
 const (
 	commentChar     = ";"
@@ -58,8 +59,8 @@ func (pr Parser) GetSectionNames() []string {
 	return sectionNames
 }
 
-  // Returns a map contains all the parsed data
-func (pr Parser) GetSections() map[string]Section {
+// Returns a map contains all the parsed data
+func (pr Parser) GetSections() map[string]section {
 
 	return pr.mp
 }
@@ -75,10 +76,10 @@ func (pr Parser) Get(sectionName, key string) (string, error) {
 	return pr.mp[sectionName][key], nil
 }
 
-// Sets the value defined with key key and located in section sectionName to val 
+// Sets the value defined with key key and located in section sectionName to val
 func (pr Parser) Set(sectionName, key, val string) {
 	if pr.mp[sectionName] == nil {
-		pr.mp[sectionName] = make(Section)
+		pr.mp[sectionName] = make(section)
 	}
 	pr.mp[sectionName][key] = val
 }
@@ -127,8 +128,8 @@ func (pr Parser) generateError(errorMsg, filePath, content string, isFile bool) 
 }
 
 func (pr *Parser) parseData(content, filePath string, isFile bool) error {
-	pr.mp = make(map[string]Section) //initialize the parser.
-	var newSection Section
+	pr.mp = make(map[string]section) //initialize the parser.
+	var newSection section
 	var sectionName string
 	lines := s.Split(content, "\n")
 
@@ -153,7 +154,7 @@ func (pr *Parser) parseData(content, filePath string, isFile bool) error {
 				pr.mp[sectionName] = newSection
 			}
 
-			newSection = make(Section)
+			newSection = make(section)
 			sectionName = s.Split(actualLine, newSectionChar)[1]
 			temp := s.Split(sectionName, endSectionChar)
 			if !s.Contains(sectionName, endSectionChar) {

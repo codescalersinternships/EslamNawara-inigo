@@ -11,23 +11,6 @@ var (
 	testLoad = "testingFiles/testLoad.ini"
 	testSave = "testingFiles/testSave.ini"
 )
-var (
-	validMap    = map[string]Section {
-		"owner":    {"name": "John Doe"},
-		"database": {"server": "192.0.2.62", "only key": ""},
-	}
-	valNoKey        = "[section]\n=value without key"
-	badSection      = "[Bad section"
-	dataWithSection = "[More] data with section"
-	multiVal        = "[Multiple]\nvalues=for=a key"
-
-	validString     = 
-    `[owner]
-    name = John Doe
-    [database]
-    server = 192.0.2.62
-    only key = `
-)
 
 func TestLoadFromString(t *testing.T) {
 	t.Run("Good string format", func(t *testing.T) {
@@ -43,7 +26,7 @@ func TestLoadFromString(t *testing.T) {
 		var pr Parser
 		pr.LoadFromString("\n\n")
 		got := pr.mp
-		var want = make(map[string]Section)
+		var want = make(map[string]section)
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("expected %v but got %v", want, got)
 		}
@@ -111,7 +94,7 @@ func TestLoadFromFile(t *testing.T) {
 		}
 	})
 }
-func TestGetSection(t *testing.T) {
+func TestGetSections(t *testing.T) {
 	var pr Parser
 	pr.LoadFromFile(testLoad)
 	got := pr.GetSections()
@@ -321,3 +304,21 @@ func ExampleParser_SaveToFile() {
 	// Add data from testLoad file to testSave file
 	pr.SaveToFile(testSave)
 }
+
+var (
+	validMap    = map[string]section {
+		"owner":    {"name": "John Doe"},
+		"database": {"server": "192.0.2.62", "only key": ""},
+	}
+	valNoKey        = "[section]\n=value without key"
+	badSection      = "[Bad section"
+	dataWithSection = "[More] data with section"
+	multiVal        = "[Multiple]\nvalues=for=a key"
+
+	validString     = 
+    `[owner]
+    name = John Doe
+    [database]
+    server = 192.0.2.62
+    only key = `
+)
